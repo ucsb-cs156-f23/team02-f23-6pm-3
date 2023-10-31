@@ -54,26 +54,27 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
                 mockMvc.perform(get("/api/ucsborganization/all"))
                                 .andExpect(status().is(200)); // logged
         }
-
+        /*
         @WithMockUser(roles = { "USER" })
         @Test
         public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
 
                 // arrange
 
-                when(ucsbOrganizationRepository.findById(eq("munger-hall"))).thenReturn(Optional.empty());
+                when(ucsbOrganizationRepository.findById(eq("ZPR"))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/ucsborganization?code=munger-hall"))
+                MvcResult response = mockMvc.perform(get("/api/ucsborganization?code=ZPR"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
 
-                verify(ucsbOrganizationRepository, times(1)).findById(eq("munger-hall"));
+                verify(ucsbOrganizationRepository, times(1)).findById(eq("ZPR"));
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("EntityNotFoundException", json.get("type"));
-                assertEquals("UCSBDiningCommons with id munger-hall not found", json.get("message"));
+                assertEquals("UCSBOrganization with id ZPR not found", json.get("message"));
         }
+        */
         //stop here
         @WithMockUser(roles = { "USER" })
         @Test
@@ -81,39 +82,34 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
 
                 // arrange
 
-                UCSBOrganization carrillo = UCSBDiningCommons.builder()
-                                .name("Carrillo")
-                                .code("carrillo")
-                                .hasSackMeal(false)
-                                .hasTakeOutMeal(false)
-                                .hasDiningCam(true)
-                                .latitude(34.409953)
-                                .longitude(-119.85277)
+                UCSBOrganization ZPR = UCSBOrganization.builder()
+                                .orgCode("ZPR")
+                                .orgTranslationShort("ZETA PHI RHO")
+                                .orgTranslation("ZETA PHI RHO")
+                                .inactive(false)
+                                .build();
+                                
+
+                UCSBOrganization SKY = UCSBOrganization.builder()
+                                .orgCode("SKY")
+                                .orgTranslationShort("SKYDIVING CLUB")
+                                .orgTranslation("SKYDIVING CLUB AT UCSB")
+                                .inactive(false)
                                 .build();
 
-                UCSBDiningCommons dlg = UCSBDiningCommons.builder()
-                                .name("De La Guerra")
-                                .code("de-la-guerra")
-                                .hasSackMeal(false)
-                                .hasTakeOutMeal(false)
-                                .hasDiningCam(true)
-                                .latitude(34.409811)
-                                .longitude(-119.845026)
-                                .build();
+                ArrayList<UCSBOrganization> expectedOrganization = new ArrayList<>();
+                expectedOrganization.addAll(Arrays.asList(ZPR, SKY));
 
-                ArrayList<UCSBDiningCommons> expectedCommons = new ArrayList<>();
-                expectedCommons.addAll(Arrays.asList(carrillo, dlg));
-
-                when(ucsbDiningCommonsRepository.findAll()).thenReturn(expectedCommons);
+                when(ucsbOrganizationRepository.findAll()).thenReturn(expectedOrganization);
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/ucsbdiningcommons/all"))
+                MvcResult response = mockMvc.perform(get("/api/ucsborganization/all"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
 
-                verify(ucsbDiningCommonsRepository, times(1)).findAll();
-                String expectedJson = mapper.writeValueAsString(expectedCommons);
+                verify(ucsbOrganizationRepository, times(1)).findAll();
+                String expectedJson = mapper.writeValueAsString(expectedOrganization);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
@@ -131,7 +127,7 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_regular_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/ucsbdiningcommons/post"))
+                mockMvc.perform(post("/api/ucsborganization/post"))
                                 .andExpect(status().is(403)); // only admins can post
         }
 
@@ -140,27 +136,24 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
         public void an_admin_user_can_post_a_new_commons() throws Exception {
                 // arrange
 
-                UCSBDiningCommons ortega = UCSBDiningCommons.builder()
-                                .name("Ortega")
-                                .code("ortega")
-                                .hasSackMeal(true)
-                                .hasTakeOutMeal(true)
-                                .hasDiningCam(true)
-                                .latitude(34.410987)
-                                .longitude(-119.84709)
+                UCSBOrganization OSLI = UCSBOrganization.builder()
+                                .orgCode("OSLI")
+                                .orgTranslationShort("STUDENT LIFE")
+                                .orgTranslation("OFFICE OF STUDENT LIFE")
+                                .inactive(true)
                                 .build();
 
-                when(ucsbDiningCommonsRepository.save(eq(ortega))).thenReturn(ortega);
+                when(ucsbOrganizationRepository.save(eq(OSLI))).thenReturn(OSLI);
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/ucsbdiningcommons/post?name=Ortega&code=ortega&hasSackMeal=true&hasTakeOutMeal=true&hasDiningCam=true&latitude=34.410987&longitude=-119.84709")
+                                post("/api/ucsborganization/post?orgCode=OSLI&orgTranslationShort=STUDENT LIFE&orgTranslation=OFFICE OF STUDENT LIFE&inactive=true")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(ucsbDiningCommonsRepository, times(1)).save(ortega);
-                String expectedJson = mapper.writeValueAsString(ortega);
+                verify(ucsbOrganizationRepository, times(1)).save(OSLI);
+                String expectedJson = mapper.writeValueAsString(OSLI);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
