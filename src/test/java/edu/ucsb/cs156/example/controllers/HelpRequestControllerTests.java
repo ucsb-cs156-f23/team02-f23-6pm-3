@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -137,4 +139,45 @@ public class HelpRequestControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+
+    // Tests for GET /api/helprequest?id=<value>
+
+    @Test
+    public void logged_out_users_cannot_get_by_id() throws Exception {
+        mockMvc.perform(get("/api/helprequest?id=1"))
+                        .andExpect(status().is(403)); // logged out users can't get by ID
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void get_helprequest_by_id_not_found() throws Exception {
+        when(helpRequestRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/helprequest?id=1"))
+                        .andExpect(status().is(404));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void get_helprequest_by_id_success() throws Exception {
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        HelpRequest helpRequest1 = HelpRequest.builder()
+                                .requesterEmail("cgaucho@ucsb.edu")
+                                .teamId("s22-5pm-3")
+                                .tableOrBreakoutRoom("7")
+                                .requestTime(ldt1)
+                                .explanation("Need help with Swagger-ui")
+                                .solved(true)
+                                .build();
+
+        when(helpRequestRepository.findById(1L)).thenReturn(Optional.of(helpRequest1));
+
+        MvcResult response = mockMvc.perform(get("/api/helprequest?id=1"))
+                                .andExpect(status().isOk()).andReturn();
+
+        String expectedJson = mapper.writeValueAsString(helpRequest1);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
 }
