@@ -84,6 +84,7 @@ public class MenuItemReviewController extends ApiController {
         return menuItemReview;
     }
 
+    
     @Operation(summary= "Delete a MenuItemReview")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
