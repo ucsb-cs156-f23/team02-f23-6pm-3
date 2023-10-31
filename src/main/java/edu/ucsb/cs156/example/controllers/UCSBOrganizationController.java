@@ -1,13 +1,18 @@
+
+
 package edu.ucsb.cs156.example.controllers;
+
 
 import edu.ucsb.cs156.example.entities.UCSBOrganization;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.UCSBOrganizationRepository;
 
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import javax.validation.Valid;
+
 
 @Tag(name = "UCSBOrganization")
 @RequestMapping("/api/ucsborganization")
@@ -28,10 +35,12 @@ import javax.validation.Valid;
 @Slf4j
 public class UCSBOrganizationController extends ApiController {
 
+
     @Autowired
     UCSBOrganizationRepository ucsbOrganizationRepository;
 
-    @Operation(summary= "List all ucsb organization")
+
+    @Operation(summary= "List all ucsb organizations")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<UCSBOrganization> allOrganizations() {
@@ -50,14 +59,16 @@ public class UCSBOrganizationController extends ApiController {
         )
         {
 
+
         UCSBOrganization organization = new UCSBOrganization();
         organization.setOrgCode(orgCode);
         organization.setOrgTranslationShort(orgTranslationShort);
         organization.setOrgTranslation(orgTranslation);
         organization.setInactive(inactive);
-        
+
 
         UCSBOrganization savedOrganization = ucsbOrganizationRepository.save(organization);
+
 
         return savedOrganization;
     }
