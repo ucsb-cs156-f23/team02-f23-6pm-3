@@ -4,7 +4,6 @@ import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.testconfig.TestConfig;
 import edu.ucsb.cs156.example.ControllerTestCase;
 import edu.ucsb.cs156.example.entities.MenuItemReview;
-import edu.ucsb.cs156.example.entities.MenuItemReview;
 import edu.ucsb.cs156.example.repositories.MenuItemReviewRepository;
 
 import java.util.ArrayList;
@@ -43,11 +42,11 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
         @MockBean
         UserRepository userRepository;
 
-        // Tests for GET /api/ucsbdates/all
+        // Tests for GET /api/menuritemeview/all
         
         @Test
         public void logged_out_users_cannot_get_all() throws Exception {
-                mockMvc.perform(get("/api/menuitemreviews/all"))
+                mockMvc.perform(get("/api/menuitemreview/all"))
                                 .andExpect(status().is(403)); // logged out users can't get all
         }
 
@@ -56,7 +55,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_users_can_get_all() throws Exception {
-                mockMvc.perform(get("/api/menuitemreviews/all"))
+                mockMvc.perform(get("/api/menuitemreview/all"))
                                 .andExpect(status().is(200)); // logged
         }
 
@@ -72,7 +71,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
                 MenuItemReview menuItemReview1 = MenuItemReview.builder()
                                 .itemId(7)
                                 .reviewerEmail("cgauch@ucsb.edu")
-                                .stars(0)
+                                .stars(5)
                                 .dateReviewed(ldt1)
                                 .comments("I loved the chocolate cake, very sweet.")
                                 .build();
@@ -93,7 +92,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
                 when(menuItemReviewRepository.findAll()).thenReturn(expectedReviews);
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/menuitemreviews/all"))
+                MvcResult response = mockMvc.perform(get("/api/menuitemreview/all"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
@@ -108,14 +107,14 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
 
         @Test
         public void logged_out_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/menuitemreviews/post"))
+                mockMvc.perform(post("/api/menuitemreview/post"))
                                 .andExpect(status().is(403));
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_regular_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/menuitemreviews/post"))
+                mockMvc.perform(post("/api/menuitemreview/post"))
                                 .andExpect(status().is(403)); // only admins can post
         }
 
@@ -129,7 +128,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
                 MenuItemReview menuItemReview1 = MenuItemReview.builder()
                                 .itemId(7)
                                 .reviewerEmail("cgauch@ucsb.edu")
-                                .stars(0)
+                                .stars(5)
                                 .dateReviewed(ldt1)
                                 .comments("I loved the chocolate cake, very sweet.")
                                 .build();
@@ -138,7 +137,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/menuitemreviews/post?itemId=7&reviewerEmail=cgauch@ucsb.edu&stars=0&dateReviewed=2022-01-03T00:00:00&comments=I loved the chocolate cake, very sweet.")
+                                post("/api/menuitemreview/post?itemId=7&reviewerEmail=cgauch@ucsb.edu&stars=5&dateReviewed=2022-01-03T00:00:00&comments=I loved the chocolate cake, very sweet.")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 

@@ -29,8 +29,8 @@ import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 
-@Tag(name = "MenuItemReviews")
-@RequestMapping("/api/menuitemreviews")
+@Tag(name = "MenuItemReview")
+@RequestMapping("/api/menuitemreview")
 @RestController
 @Slf4j
 public class MenuItemReviewController extends ApiController {
@@ -50,17 +50,17 @@ public class MenuItemReviewController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public MenuItemReview postMenuItemReview(
-            @Parameter(name="itemId", description="the id in the UCSBDiningCommonsMenuItems table of a menu item", example="7") @RequestParam Long itemId,
-            @Parameter(name="reviewerEmail", description="the email of the reviewer", example="cgaucho@ucsb.edu") @RequestParam String reviewerEmail,
-            @Parameter(name="stars", description="0 to 5 stars", example="5") @RequestParam int stars,
+            @Parameter(name="itemId", description="The id of a menu item.", example="7") @RequestParam Long itemId,
+            @Parameter(name="reviewerEmail", description="The email of the reviewer.", example="cgaucho@ucsb.edu") @RequestParam String reviewerEmail,
+            @Parameter(name="stars", description="The number of stars rated: 0 to 5.", example="5") @RequestParam int stars,
             @Parameter(name="dateReviewed", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("dateReviewed") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateReviewed,
-            @Parameter(name="comments", description="The comments of the reviewer", example="I love the Apple Pie") @RequestParam String comments)
+            @Parameter(name="comments", description="The comments of the reviewer.", example="I love the Apple Pie") @RequestParam String comments)
             throws JsonProcessingException {
 
         // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         // See: https://www.baeldung.com/spring-date-parameters
 
-        log.info("dateReviewed={}", dateReviewed);
+        log.info("localDateTime={}", dateReviewed);
 
         MenuItemReview menuItemReview = new MenuItemReview();
         menuItemReview.setItemId(itemId);
