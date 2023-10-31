@@ -54,7 +54,7 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
                 mockMvc.perform(get("/api/ucsborganization/all"))
                                 .andExpect(status().is(200)); // logged
         }
-        /*
+        
         @WithMockUser(roles = { "USER" })
         @Test
         public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
@@ -64,7 +64,7 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
                 when(ucsbOrganizationRepository.findById(eq("ZPR"))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/ucsborganization?code=ZPR"))
+                MvcResult response = mockMvc.perform(get("/api/ucsborganization?orgCode=ZPR"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
@@ -74,7 +74,7 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
                 assertEquals("EntityNotFoundException", json.get("type"));
                 assertEquals("UCSBOrganization with id ZPR not found", json.get("message"));
         }
-        */
+        
         //stop here
         @WithMockUser(roles = { "USER" })
         @Test
@@ -154,6 +154,41 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
                 // assert
                 verify(ucsbOrganizationRepository, times(1)).save(OSLI);
                 String expectedJson = mapper.writeValueAsString(OSLI);
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(expectedJson, responseString);
+        }
+
+        // Tests for GET /api/ucsborganization?...
+
+        @Test
+        public void logged_out_users_cannot_get_by_id() throws Exception {
+                mockMvc.perform(get("/api/ucsborganization?orgCode=KRC"))
+                                .andExpect(status().is(403)); // logged out users can't get by id
+        }
+        
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
+
+                // arrange
+
+                UCSBOrganization orgs = UCSBOrganization.builder()
+                        .orgCode("KRC")
+                        .orgTranslationShort("KOREAN RADIO CL")
+                        .orgTranslation("ZETA PHI RHO")
+                        .inactive(false)
+                        .build();
+
+                when(ucsbOrganizationRepository.findById(eq("KRC"))).thenReturn(Optional.of(orgs));
+
+                // act
+                MvcResult response = mockMvc.perform(get("/api/ucsborganization?orgCode=KRC"))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+
+                verify(ucsbOrganizationRepository, times(1)).findById(eq("KRC"));
+                String expectedJson = mapper.writeValueAsString(orgs);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
