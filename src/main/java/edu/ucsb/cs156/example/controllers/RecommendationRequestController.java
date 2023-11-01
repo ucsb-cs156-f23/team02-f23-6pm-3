@@ -1,7 +1,6 @@
 package edu.ucsb.cs156.example.controllers;
 
 import edu.ucsb.cs156.example.entities.RecommendationRequest;
-import edu.ucsb.cs156.example.entities.UCSBDate;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.RecommendationRequestRepository;
 
@@ -93,6 +92,28 @@ public class RecommendationRequestController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
 
         return recommendationRequest;
+    }
+
+    @Operation(summary= "Update a recommendation request")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public RecommendationRequest updateRecommendationRequest(
+        @Parameter(name="id") @RequestParam Long id,
+        @RequestBody @Valid RecommendationRequest incoming) {
+
+        RecommendationRequest recRequest = recRequestRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
+
+        recRequest.setRequesterEmail(incoming.getRequesterEmail());
+        recRequest.setProfessorEmail(incoming.getProfessorEmail());
+        recRequest.setExplanation(incoming.getExplanation());
+        recRequest.setDateRequested(incoming.getDateRequested());
+        recRequest.setDateNeeded(incoming.getDateNeeded());
+        recRequest.setDone(incoming.getDone());
+
+        recRequestRepository.save(recRequest);
+
+        return recRequest;
     }
 }
 
