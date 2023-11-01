@@ -48,12 +48,12 @@ import java.time.LocalDateTime;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/post&quot;)
     public RecommendationRequest postRecommendationRequest(
-            @Parameter(name=&quot;requestorEmail&quot;, example = &quot;abc@ucsb.edu&quot;) @RequestParam String requestorEmail,
-            @Parameter(name=&quot;professorEmail&quot;, example = &quot;xyz@ucsb.edu&quot;) @RequestParam String professorEmail,
-            @Parameter(name=&quot;explanation&quot;, example = &quot;BS/MS Program&quot;) @RequestParam String explanation,
-            @Parameter(name=&quot;dateRequested&quot;, description=&quot;In ISO format: YYYY-mm-ddTHH:MM:SS&quot;, example = &quot;2023-10-10T12:12:12&quot;) @RequestParam(&quot;dateRequested&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
-            @Parameter(name=&quot;dateNeeded&quot;, description=&quot;In ISO format: YYYY-mm-ddTHH:MM:SS&quot;, example = &quot;2024-12-12T10:10:10&quot;) @RequestParam(&quot;dateNeeded&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
-            @Parameter(name=&quot;done&quot;, example = &quot;false&quot;) @RequestParam boolean done)
+            @Parameter(name=&quot;requestorEmail&quot;, description=&quot;Email of requestor requestor&quot;, example=&quot;abc@ucsb.edu&quot;) @RequestParam String requestorEmail,
+            @Parameter(name=&quot;professorEmail&quot;, description=&quot;Email of the professor&quot;, example=&quot;xyz@ucsb.edu&quot;) @RequestParam String professorEmail,
+            @Parameter(name=&quot;explanation&quot;, description=&quot;Reason for recommendation request&quot;, example=&quot;BS/MS Program&quot;) @RequestParam String explanation,
+            @Parameter(name=&quot;dateRequested&quot;, description=&quot;In ISO format: YYYY-mm-ddTHH:MM:SS&quot;, example=&quot;2023-10-10T12:12:12&quot;) @RequestParam(&quot;dateRequested&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
+            @Parameter(name=&quot;dateNeeded&quot;, description=&quot;In ISO format: YYYY-mm-ddTHH:MM:SS&quot;, example=&quot;2024-12-12T10:10:10&quot;) @RequestParam(&quot;dateNeeded&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
+            @Parameter(name=&quot;done&quot;, description=&quot;Is the recommendation request completed?&quot;, example=&quot;false&quot;) @RequestParam boolean done)
             throws JsonProcessingException {
 
 <span class="fc" id="L59">        log.info(&quot;dateRequested={} dateNeeded={}&quot;, dateRequested, dateNeeded);</span>
@@ -75,7 +75,7 @@ import java.time.LocalDateTime;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
     public Object deleteRecommendationRequest(
-            @Parameter(name=&quot;id&quot;, example=&quot;1&quot;) @RequestParam Long id) {
+            @Parameter(name=&quot;id&quot;, description=&quot;Id of recommendation request to delete&quot;, example=&quot;1&quot;) @RequestParam Long id) {
 <span class="fc" id="L79">        RecommendationRequest recRequest = recRequestRepository.findById(id)</span>
 <span class="fc" id="L80">                .orElseThrow(() -&gt; new EntityNotFoundException(RecommendationRequest.class, id));</span>
 
@@ -87,7 +87,7 @@ import java.time.LocalDateTime;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
     public RecommendationRequest getRecommendationRequest(
-            @Parameter(name=&quot;id&quot;, example=&quot;1&quot;) @RequestParam Long id) {
+            @Parameter(name=&quot;id&quot;, description=&quot;Id of recommendation request to return&quot;, example=&quot;1&quot;) @RequestParam Long id) {
 <span class="fc" id="L91">        RecommendationRequest recommendationRequest = recRequestRepository.findById(id)</span>
 <span class="fc" id="L92">                .orElseThrow(() -&gt; new EntityNotFoundException(RecommendationRequest.class, id));</span>
 
@@ -98,7 +98,7 @@ import java.time.LocalDateTime;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;&quot;)
     public RecommendationRequest updateRecommendationRequest(
-        @Parameter(name=&quot;id&quot;, example=&quot;1&quot;) @RequestParam Long id,
+        @Parameter(name=&quot;id&quot;, description=&quot;Id of recommendation request to update&quot;, example=&quot;1&quot;) @RequestParam Long id,
         @RequestBody @Valid RecommendationRequest incoming) {
 
 <span class="fc" id="L104">        RecommendationRequest recRequest = recRequestRepository.findById(id)</span>
