@@ -48,18 +48,14 @@ public class HelpRequestController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public HelpRequest postHelpRequest(
-            @Parameter(name="requesterEmail") @RequestParam String requesterEmail,
-            @Parameter(name="teamId") @RequestParam String teamId,
-            @Parameter(name="tableOrBreakoutRoom") @RequestParam String tableOrBreakoutRoom,
-            @Parameter(name="requestTime", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("requestTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime requestTime,
-            @Parameter(name="explanation") @RequestParam String explanation,
-            @Parameter(name="solved") @RequestParam boolean solved)
-            throws JsonProcessingException {
-
-        // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        // See: https://www.baeldung.com/spring-date-parameters
-
-        log.info("requestTime={}", requestTime);
+            @Parameter(name="requesterEmail", description="Email of the requester", example="user@ucsb.edu") @RequestParam String requesterEmail,
+            @Parameter(name="teamId", description="ID of the team", example="s22-5pm-3") @RequestParam String teamId,
+            @Parameter(name="tableOrBreakoutRoom", description="Table or Breakout room number", example="7") @RequestParam String tableOrBreakoutRoom,
+            @Parameter(name="requestTime", description="Time of the request in iso format; see https://en.wikipedia.org/wiki/ISO_8601", example="YYYY-mm-ddTHH:MM:SS") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime requestTime,
+            @Parameter(name="explanation", description="Explanation for the help request", example="Need help with Swagger-ui") @RequestParam String explanation,
+            @Parameter(name="solved", description="Is the request solved?", example="false") @RequestParam boolean solved) {
+        
+        log.info("Creating new help request by email: {}", requesterEmail);
 
         HelpRequest helpRequest = new HelpRequest();
         helpRequest.setRequesterEmail(requesterEmail);
@@ -70,9 +66,9 @@ public class HelpRequestController extends ApiController {
         helpRequest.setSolved(solved);
 
         HelpRequest savedHelpRequest = helpRequestRepository.save(helpRequest);
-
+        log.info("Help request saved with ID: {}", savedHelpRequest.getId());
         return savedHelpRequest;
-    }  
+    }
 
 
     @Operation(summary= "Get a single help request")
