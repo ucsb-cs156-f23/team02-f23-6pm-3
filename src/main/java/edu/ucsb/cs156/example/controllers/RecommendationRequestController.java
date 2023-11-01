@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.example.controllers;
 
 import edu.ucsb.cs156.example.entities.RecommendationRequest;
+import edu.ucsb.cs156.example.entities.UCSBDate;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.RecommendationRequestRepository;
 
@@ -27,7 +28,7 @@ import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 
-@Tag(name = "recommendationrequests")
+@Tag(name = "RecommendationRequests")
 @RequestMapping("/api/recommendationrequests")
 @RestController
 @Slf4j
@@ -51,8 +52,8 @@ public class RecommendationRequestController extends ApiController {
             @Parameter(name="requestorEmail", example = "abc@ucsb.edu") @RequestParam String requestorEmail,
             @Parameter(name="professorEmail", example = "xyz@ucsb.edu") @RequestParam String professorEmail,
             @Parameter(name="explanation", example = "BS/MS Program") @RequestParam String explanation,
-            @Parameter(name="dateRequested", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601", example = "2023-10-10T12:12:12") @RequestParam("dateRequested") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
-            @Parameter(name="dateNeeded", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601", example = "2024-12-12T10:10:10") @RequestParam("dateNeeded") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
+            @Parameter(name="dateRequested", description="In iso format: YYYY-mm-ddTHH:MM:SS", example = "2023-10-10T12:12:12") @RequestParam("dateRequested") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
+            @Parameter(name="dateNeeded", description="In iso format: YYYY-mm-ddTHH:MM:SS", example = "2024-12-12T10:10:10") @RequestParam("dateNeeded") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
             @Parameter(name="done", example = "false") @RequestParam boolean done)
             throws JsonProcessingException {
 
@@ -69,6 +70,29 @@ public class RecommendationRequestController extends ApiController {
         RecommendationRequest savedRecRequest = recRequestRepository.save(recRequest);
 
         return savedRecRequest;
+    }
+
+    @Operation(summary= "Delete a recommendation request")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteRecommendationRequest(
+            @Parameter(name="id", example="1") @RequestParam Long id) {
+        RecommendationRequest recRequest = recRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
+
+        recRequestRepository.delete(recRequest);
+        return genericMessage("RecommendationRequest with id %s deleted".formatted(id));
+    }
+
+    @Operation(summary= "Get a single recommendation request")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public RecommendationRequest getRecommendationRequest(
+            @Parameter(name="id", example="1") @RequestParam Long id) {
+        RecommendationRequest recommendationRequest = recRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
+
+        return recommendationRequest;
     }
 }
 
