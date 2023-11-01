@@ -96,5 +96,25 @@ import javax.validation.Valid;
 <span class="fc" id="L96">        return genericMessage(&quot;UCSOrganization with id %s deleted&quot;.formatted(orgCode));</span>
     }
 
+    @Operation(summary= &quot;Update a  organization&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;&quot;)
+    public UCSBOrganization updateOrganization(
+            @Parameter(name=&quot;orgCode&quot;,description=&quot;The organization code&quot;, example=&quot;ZPR&quot;) @RequestParam String orgCode,
+            @RequestBody @Valid UCSBOrganization incoming) {
+
+<span class="fc" id="L106">        UCSBOrganization orgs = ucsbOrganizationRepository.findById(orgCode)</span>
+<span class="fc" id="L107">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBOrganization.class, orgCode));</span>
+        
+<span class="fc" id="L109">        orgs.setOrgCode(incoming.getOrgCode());</span>
+<span class="fc" id="L110">        orgs.setOrgTranslationShort(incoming.getOrgTranslationShort());</span>
+<span class="fc" id="L111">        orgs.setOrgTranslation(incoming.getOrgTranslation());</span>
+<span class="fc" id="L112">        orgs.setInactive(incoming.getInactive());</span>
+
+<span class="fc" id="L114">        ucsbOrganizationRepository.save(orgs);</span>
+
+<span class="fc" id="L116">        return orgs;</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
