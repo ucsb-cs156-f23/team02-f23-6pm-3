@@ -50,9 +50,9 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/post&quot;)
     public UCSBDiningCommonsMenuItem postUCSBDiningCommonsMenuItem(
-            @Parameter(name=&quot;diningCommonsCode&quot;, description=&quot;dining common that serves the item&quot;) @RequestParam String diningCommonsCode,
-            @Parameter(name=&quot;name&quot;, description=&quot;name of the item&quot;) @RequestParam String name,
-            @Parameter(name=&quot;station&quot;, description=&quot;station at the dining common that serves the item&quot;) @RequestParam String station)
+            @Parameter(name=&quot;diningCommonsCode&quot;, description=&quot;dining common that serves the item&quot;, example=&quot;ortega&quot;) @RequestParam String diningCommonsCode,
+            @Parameter(name=&quot;name&quot;, description=&quot;name of the item&quot;, example=&quot;Chicken Caesar Salad&quot;) @RequestParam String name,
+            @Parameter(name=&quot;station&quot;, description=&quot;station at the dining common that serves the item&quot;, example=&quot;Entrees&quot;) @RequestParam String station)
             throws JsonProcessingException {
 
         
@@ -72,11 +72,23 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
     public UCSBDiningCommonsMenuItem getById(
-            @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
+            @Parameter(name=&quot;id&quot;, description = &quot;id of the menu item&quot;) @RequestParam Long id) {
 <span class="fc" id="L76">        UCSBDiningCommonsMenuItem menuItem = ucsbDiningCommonsMenuItemRepository.findById(id)</span>
 <span class="fc" id="L77">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBDiningCommonsMenuItem.class, id));</span>
 
 <span class="fc" id="L79">        return menuItem;</span>
+    }
+
+    @Operation(summary= &quot;Delete a menu item&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    public Object deleteUCSBDiningCommonsMenuItem(
+            @Parameter(name=&quot;id&quot;, description = &quot;id of the menu item&quot;) @RequestParam Long id) {
+<span class="fc" id="L87">        UCSBDiningCommonsMenuItem menuItem = ucsbDiningCommonsMenuItemRepository.findById(id)</span>
+<span class="fc" id="L88">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBDiningCommonsMenuItem.class, id));</span>
+
+<span class="fc" id="L90">        ucsbDiningCommonsMenuItemRepository.delete(menuItem);</span>
+<span class="fc" id="L91">        return genericMessage(&quot;menu item with id %s deleted&quot;.formatted(id));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
