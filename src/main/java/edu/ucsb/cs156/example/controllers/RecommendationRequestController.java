@@ -48,12 +48,12 @@ public class RecommendationRequestController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public RecommendationRequest postRecommendationRequest(
-            @Parameter(name="requestorEmail", example = "abc@ucsb.edu") @RequestParam String requestorEmail,
-            @Parameter(name="professorEmail", example = "xyz@ucsb.edu") @RequestParam String professorEmail,
-            @Parameter(name="explanation", example = "BS/MS Program") @RequestParam String explanation,
-            @Parameter(name="dateRequested", description="In ISO format: YYYY-mm-ddTHH:MM:SS", example = "2023-10-10T12:12:12") @RequestParam("dateRequested") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
-            @Parameter(name="dateNeeded", description="In ISO format: YYYY-mm-ddTHH:MM:SS", example = "2024-12-12T10:10:10") @RequestParam("dateNeeded") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
-            @Parameter(name="done", example = "false") @RequestParam boolean done)
+            @Parameter(name="requestorEmail", description="Email of requestor requestor", example="abc@ucsb.edu") @RequestParam String requestorEmail,
+            @Parameter(name="professorEmail", description="Email of the professor", example="xyz@ucsb.edu") @RequestParam String professorEmail,
+            @Parameter(name="explanation", description="Reason for recommendation request", example="BS/MS Program") @RequestParam String explanation,
+            @Parameter(name="dateRequested", description="In ISO format: YYYY-mm-ddTHH:MM:SS", example="2023-10-10T12:12:12") @RequestParam("dateRequested") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
+            @Parameter(name="dateNeeded", description="In ISO format: YYYY-mm-ddTHH:MM:SS", example="2024-12-12T10:10:10") @RequestParam("dateNeeded") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
+            @Parameter(name="done", description="Is the recommendation request completed?", example="false") @RequestParam boolean done)
             throws JsonProcessingException {
 
         log.info("dateRequested={} dateNeeded={}", dateRequested, dateNeeded);
@@ -75,7 +75,7 @@ public class RecommendationRequestController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public Object deleteRecommendationRequest(
-            @Parameter(name="id", example="1") @RequestParam Long id) {
+            @Parameter(name="id", description="Id of recommendation request to delete", example="1") @RequestParam Long id) {
         RecommendationRequest recRequest = recRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
 
@@ -87,7 +87,7 @@ public class RecommendationRequestController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public RecommendationRequest getRecommendationRequest(
-            @Parameter(name="id", example="1") @RequestParam Long id) {
+            @Parameter(name="id", description="Id of recommendation request to return", example="1") @RequestParam Long id) {
         RecommendationRequest recommendationRequest = recRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
 
@@ -98,7 +98,7 @@ public class RecommendationRequestController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
     public RecommendationRequest updateRecommendationRequest(
-        @Parameter(name="id", example="1") @RequestParam Long id,
+        @Parameter(name="id", description="Id of recommendation request to update", example="1") @RequestParam Long id,
         @RequestBody @Valid RecommendationRequest incoming) {
 
         RecommendationRequest recRequest = recRequestRepository.findById(id)
