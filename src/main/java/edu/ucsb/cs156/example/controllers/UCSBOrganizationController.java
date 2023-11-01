@@ -77,7 +77,7 @@ public class UCSBOrganizationController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public UCSBOrganization getById(
-            @Parameter(name="orgCode") @RequestParam String orgCode) {
+            @Parameter(name="orgCode",description="The organization code", example="ZPR") @RequestParam String orgCode) {
         UCSBOrganization organization = ucsbOrganizationRepository.findById(orgCode)
                 .orElseThrow(() -> new EntityNotFoundException(UCSBOrganization.class, orgCode));
 
@@ -88,7 +88,7 @@ public class UCSBOrganizationController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public Object deleteOrganization(
-            @Parameter(name="orgCode") @RequestParam String orgCode) {
+            @Parameter(name="orgCode",description="The organization code", example="ZPR") @RequestParam String orgCode) {
         UCSBOrganization organization = ucsbOrganizationRepository.findById(orgCode)
                 .orElseThrow(() -> new EntityNotFoundException(UCSBOrganization.class, orgCode));
 
@@ -100,7 +100,7 @@ public class UCSBOrganizationController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
     public UCSBOrganization updateOrganization(
-            @Parameter(name="orgCode") @RequestParam String orgCode,
+            @Parameter(name="orgCode",description="The organization code", example="ZPR") @RequestParam String orgCode,
             @RequestBody @Valid UCSBOrganization incoming) {
 
         UCSBOrganization orgs = ucsbOrganizationRepository.findById(orgCode)
