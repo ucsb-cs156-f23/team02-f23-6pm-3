@@ -84,16 +84,17 @@ import java.time.LocalDateTime;
 <span class="fc" id="L84">        return menuItemReview;</span>
     }
 
+    
     @Operation(summary= &quot;Delete a MenuItemReview&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
     public Object deleteMenuItemReview(
             @Parameter(name=&quot;id&quot;, description=&quot;Menu item review id:&quot;, example=&quot;1&quot;) @RequestParam Long id) {
-<span class="fc" id="L92">        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)</span>
-<span class="fc" id="L93">                .orElseThrow(() -&gt; new EntityNotFoundException(MenuItemReview.class, id));</span>
+<span class="fc" id="L93">        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)</span>
+<span class="fc" id="L94">                .orElseThrow(() -&gt; new EntityNotFoundException(MenuItemReview.class, id));</span>
 
-<span class="fc" id="L95">        menuItemReviewRepository.delete(menuItemReview);</span>
-<span class="fc" id="L96">        return genericMessage(&quot;MenuItemReview with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L96">        menuItemReviewRepository.delete(menuItemReview);</span>
+<span class="fc" id="L97">        return genericMessage(&quot;MenuItemReview with id %s deleted&quot;.formatted(id));</span>
     }
 
 }
