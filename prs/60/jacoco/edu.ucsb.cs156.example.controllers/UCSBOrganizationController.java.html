@@ -52,7 +52,7 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/post&quot;)
     public UCSBOrganization postOrganization(
-@Parameter(name=&quot;orgCode&quot;,description=&quot;The organization code&quot;, example=&quot;ZPR&quot;) @RequestParam String orgCode,
+        @Parameter(name=&quot;orgCode&quot;,description=&quot;The organization code&quot;, example=&quot;ZPR&quot;) @RequestParam String orgCode,
         @Parameter(name=&quot;orgTranslationShort&quot;,description=&quot;The organization short translation&quot;, example=&quot;ZETA PHI RHO&quot;) @RequestParam String orgTranslationShort,
         @Parameter(name=&quot;orgTranslation&quot;,description=&quot;The organization translation&quot;,example=&quot;ZETA PHI RHO&quot;) @RequestParam String orgTranslation,
         @Parameter(name=&quot;inactive&quot;,description=&quot;whether it's active&quot;,example=&quot;true&quot;) @RequestParam boolean inactive
@@ -77,7 +77,7 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
     public UCSBOrganization getById(
-            @Parameter(name=&quot;orgCode&quot;) @RequestParam String orgCode) {
+            @Parameter(name=&quot;orgCode&quot;,description=&quot;The organization code&quot;, example=&quot;ZPR&quot;) @RequestParam String orgCode) {
 <span class="fc" id="L81">        UCSBOrganization organization = ucsbOrganizationRepository.findById(orgCode)</span>
 <span class="fc" id="L82">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBOrganization.class, orgCode));</span>
 
@@ -88,7 +88,7 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
     public Object deleteOrganization(
-            @Parameter(name=&quot;orgCode&quot;) @RequestParam String orgCode) {
+            @Parameter(name=&quot;orgCode&quot;,description=&quot;The organization code&quot;, example=&quot;ZPR&quot;) @RequestParam String orgCode) {
 <span class="fc" id="L92">        UCSBOrganization organization = ucsbOrganizationRepository.findById(orgCode)</span>
 <span class="fc" id="L93">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBOrganization.class, orgCode));</span>
 
@@ -100,7 +100,7 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;&quot;)
     public UCSBOrganization updateOrganization(
-            @Parameter(name=&quot;orgCode&quot;) @RequestParam String orgCode,
+            @Parameter(name=&quot;orgCode&quot;,description=&quot;The organization code&quot;, example=&quot;ZPR&quot;) @RequestParam String orgCode,
             @RequestBody @Valid UCSBOrganization incoming) {
 
 <span class="fc" id="L106">        UCSBOrganization orgs = ucsbOrganizationRepository.findById(orgCode)</span>
