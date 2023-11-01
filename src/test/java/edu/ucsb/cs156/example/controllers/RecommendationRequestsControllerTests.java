@@ -96,7 +96,6 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
             .andExpect(status().isOk()).andReturn();
 
         // assert
-
         verify(recRequestRepository, times(1)).findAll();
         String expectedJson = mapper.writeValueAsString(expectedRecRequests);
         String responseString = response.getResponse().getContentAsString();
@@ -121,8 +120,8 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
     public void an_admin_user_can_post_a_new_recommendationrequests() throws Exception {
+        
         // arrange
-
         LocalDateTime ldt1 = LocalDateTime.parse("2022-07-25T07:03:23");
         LocalDateTime ldt2 = LocalDateTime.parse("2023-03-01T00:00:00");
 
@@ -155,8 +154,8 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
     public void admin_can_delete_a_recommendationrequest() throws Exception {
+       
         // arrange
-
         LocalDateTime ldt1 = LocalDateTime.parse("2022-07-25T07:03:23");
         LocalDateTime ldt2 = LocalDateTime.parse("2023-03-01T00:00:00");
 
@@ -189,8 +188,8 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
     @Test
     public void admin_tries_to_delete_non_existant_recommendationrequest_and_gets_right_error_message() 
         throws Exception {
+        
         // arrange
-
         when(recRequestRepository.findById(eq(15L))).thenReturn(Optional.empty());
 
         // act
@@ -237,7 +236,6 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
             .andExpect(status().isOk()).andReturn();
 
         // assert
-
         verify(recRequestRepository, times(1)).findById(eq(7L));
         String expectedJson = mapper.writeValueAsString(recRequest);
         String responseString = response.getResponse().getContentAsString();
@@ -249,7 +247,6 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
     public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
 
         // arrange
-
         when(recRequestRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
         // act
@@ -257,10 +254,97 @@ public class RecommendationRequestsControllerTests extends ControllerTestCase {
             .andExpect(status().isNotFound()).andReturn();
 
         // assert
-
         verify(recRequestRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
         assertEquals("RecommendationRequest with id 7 not found", json.get("message"));
+    }
+
+    // Tests for PUT /api/ucsbdates?id=... 
+
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void admin_can_edit_an_existing_recommendationrequest() throws Exception {
+                
+        // arrange
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-07-25T07:03:23");
+        LocalDateTime ldt2 = LocalDateTime.parse("2023-03-01T00:00:00");
+        LocalDateTime ldt3 = LocalDateTime.parse("2022-05-11T10:23:45");
+        LocalDateTime ldt4 = LocalDateTime.parse("2022-12-12T00:00:00");
+
+        RecommendationRequest recRequestOrig = RecommendationRequest.builder()
+            .requesterEmail("abc@ucsb.edu")
+            .professorEmail("xyz@ucsb.edu")
+            .explanation("BS/MS Program")
+            .dateRequested(ldt1)
+            .dateNeeded(ldt2)
+            .done(true)
+            .build();
+
+        RecommendationRequest recRequestEdited = RecommendationRequest.builder()
+            .requesterEmail("qwe@ucsb.edu")
+            .professorEmail("rty@ucsb.edu")
+            .explanation("PhD CS Stanford")
+            .dateRequested(ldt3)
+            .dateNeeded(ldt4)
+            .done(false)
+            .build();
+
+        String requestBody = mapper.writeValueAsString(recRequestEdited);
+
+        when(recRequestRepository.findById(eq(67L))).thenReturn(Optional.of(recRequestOrig));
+
+        // act
+        MvcResult response = mockMvc.perform(
+            put("/api/recommendationrequests?id=67")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(requestBody)
+                .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(recRequestRepository, times(1)).findById(67L);
+        verify(recRequestRepository, times(1)).save(recRequestEdited); // should be saved with correct user
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(requestBody, responseString);
+    }
+
+        
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void admin_cannot_edit_recommendationrequest_that_does_not_exist() throws Exception {
+       
+        // arrange
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-07-25T07:03:23");
+        LocalDateTime ldt2 = LocalDateTime.parse("2023-03-01T00:00:00");
+
+        RecommendationRequest recRequestEdit = RecommendationRequest.builder()
+            .requesterEmail("abc@ucsb.edu")
+            .professorEmail("xyz@ucsb.edu")
+            .explanation("BS/MS Program")
+            .dateRequested(ldt1)
+            .dateNeeded(ldt2)
+            .done(true)
+            .build();
+
+        String requestBody = mapper.writeValueAsString(recRequestEdit);
+
+        when(recRequestRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+            put("/api/recommendationrequests?id=67")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(requestBody)
+                .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(recRequestRepository, times(1)).findById(67L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("RecommendationRequest with id 67 not found", json.get("message"));
+   
     }
 }
