@@ -44,19 +44,19 @@ public class RecommendationRequestController extends ApiController {
         return requests;
     }
 
-    @Operation(summary= "Create a new date")
+    @Operation(summary= "Create a new recommendation request")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public RecommendationRequest postRecommendationRequest(
-            @Parameter(name="requestorEmail") @RequestParam String requestorEmail,
-            @Parameter(name="professorEmail") @RequestParam String professorEmail,
-            @Parameter(name="explanation") @RequestParam String explanation,
-            @Parameter(name="dateRequested", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("localDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
-            @Parameter(name="dateNeeded", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("localDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
-            @Parameter(name="done") @RequestParam boolean done)
+            @Parameter(name="requestorEmail", example = "abc@ucsb.edu") @RequestParam String requestorEmail,
+            @Parameter(name="professorEmail", example = "xyz@ucsb.edu") @RequestParam String professorEmail,
+            @Parameter(name="explanation", example = "BS/MS Program") @RequestParam String explanation,
+            @Parameter(name="dateRequested", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601", example = "2023-10-10T12:12:12") @RequestParam("dateRequested") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateRequested,
+            @Parameter(name="dateNeeded", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601", example = "2024-12-12T10:10:10") @RequestParam("dateNeeded") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateNeeded,
+            @Parameter(name="done", example = "false") @RequestParam boolean done)
             throws JsonProcessingException {
 
-        //log.info("localDateTime={}", localDateTime);
+        log.info("dateRequested={} dateNeeded={}", dateRequested, dateNeeded);
 
         RecommendationRequest recRequest = new RecommendationRequest();
         recRequest.setRequesterEmail(requestorEmail);
