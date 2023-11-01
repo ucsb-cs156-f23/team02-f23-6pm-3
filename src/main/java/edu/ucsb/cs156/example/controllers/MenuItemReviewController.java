@@ -1,10 +1,8 @@
 package edu.ucsb.cs156.example.controllers;
 
-import edu.ucsb.cs156.example.entities.UCSBDate;
 import edu.ucsb.cs156.example.entities.MenuItemReview;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.MenuItemReviewRepository;
-import edu.ucsb.cs156.example.repositories.UCSBDateRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,11 +48,11 @@ public class MenuItemReviewController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public MenuItemReview postMenuItemReview(
-            @Parameter(name="itemId", description="The id of a menu item.", example="7") @RequestParam Long itemId,
-            @Parameter(name="reviewerEmail", description="The email of the reviewer.", example="cgaucho@ucsb.edu") @RequestParam String reviewerEmail,
-            @Parameter(name="stars", description="The number of stars rated: 0 to 5.", example="5") @RequestParam int stars,
-            @Parameter(name="dateReviewed", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("dateReviewed") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateReviewed,
-            @Parameter(name="comments", description="The comments of the reviewer.", example="I love the Apple Pie") @RequestParam String comments)
+            @Parameter(name="itemId", description="Menu item id:", example="7") @RequestParam Long itemId,
+            @Parameter(name="reviewerEmail", description="Reviewer email:", example="cgaucho@ucsb.edu") @RequestParam String reviewerEmail,
+            @Parameter(name="stars", description="Stars rated [0 - 5]:", example="5") @RequestParam int stars,
+            @Parameter(name="dateReviewed", description="in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601", example="2022-01-03T00:00:00") @RequestParam("dateReviewed") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateReviewed,
+            @Parameter(name="comments", description="Reviewer comments:", example="I love the Apple Pie") @RequestParam String comments)
             throws JsonProcessingException {
 
         // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -72,6 +70,30 @@ public class MenuItemReviewController extends ApiController {
         MenuItemReview savedMenuItemReview = menuItemReviewRepository.save(menuItemReview);
 
         return savedMenuItemReview;
+    }
+
+
+    @Operation(summary= "Get a single menu item review")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public MenuItemReview getById(
+            @Parameter(name="id", description="Menu item review id:", example="1") @RequestParam Long id) {
+        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
+
+        return menuItemReview;
+    }
+
+    @Operation(summary= "Delete a MenuItemReview")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteMenuItemReview(
+            @Parameter(name="id", description="Menu item review id:", example="1") @RequestParam Long id) {
+        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
+
+        menuItemReviewRepository.delete(menuItemReview);
+        return genericMessage("MenuItemReview with id %s deleted".formatted(id));
     }
 
 }
