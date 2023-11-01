@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.example.controllers;
 
 import edu.ucsb.cs156.example.entities.RecommendationRequest;
+import edu.ucsb.cs156.example.entities.UCSBDate;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.RecommendationRequestRepository;
 
@@ -27,7 +28,7 @@ import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 
-@Tag(name = "recommendationrequests")
+@Tag(name = "RecommendationRequests")
 @RequestMapping("/api/recommendationrequests")
 @RestController
 @Slf4j
@@ -81,6 +82,17 @@ public class RecommendationRequestController extends ApiController {
 
         recRequestRepository.delete(recRequest);
         return genericMessage("RecommendationRequest with id %s deleted".formatted(id));
+    }
+
+    @Operation(summary= "Get a single recommendation request")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public RecommendationRequest getRecommendationRequest(
+            @Parameter(name="id", example="1") @RequestParam Long id) {
+        RecommendationRequest recommendationRequest = recRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
+
+        return recommendationRequest;
     }
 }
 
