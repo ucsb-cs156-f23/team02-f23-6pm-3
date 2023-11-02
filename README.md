@@ -1,4 +1,16 @@
-# # team02-f23-6pm-3
+# team02-f23-6pm-3
+
+# Database Table
+```
+| Table                       | Team Member  |     Github Id     |
+|-----------------------------|--------------|-------------------| 
+| `UCSBDiningCommonsMenuItem` | Erica        | erica-ll          |
+| `UCSBOrganization`          | Yicong       | YicongYan         |
+| `RecommendationRequest`     | Salvador     | SalvadorGracia    |
+| `MenuItemReview`            | Bella        | bella-ward        |  
+| `HelpRequest`               | Leo          | HououinKyouma-2036|
+| `Articles`                  | Garret       | Garrett-Hu        |
+```
 
 Instructions: <https://ucsb-cs156.github.io/f23/lab/team02.html>
 
@@ -72,15 +84,3 @@ On localhost:
 
 On Dokku, follow instructions for Dokku databases:
 * <https://ucsb-cs156.github.io/topics/dokku/postgres_database.html>
-
-# Database Table
-```
-| Table                       | Team Member  |     Github Id     |
-|-----------------------------|--------------|-------------------| 
-| `UCSBDiningCommonsMenuItem` | Erica        | erica-ll          |
-| `UCSBOrganization`          | Yicong       | YicongYan         |
-| `RecommendationRequest`     | Salvador     | SalvadorGracia    |
-| `MenuItemReview`            | Bella        | bella-ward        |  
-| `HelpRequest`               | Leo          | HououinKyouma-2036|
-| `Articles`                  | Garret       | Garrett-Hu        |
-```
