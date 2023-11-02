@@ -53,7 +53,8 @@ public class HelpRequestController extends ApiController {
             @Parameter(name="tableOrBreakoutRoom", description="Table or Breakout room number", example="7") @RequestParam String tableOrBreakoutRoom,
             @Parameter(name="requestTime", description="Time of the request in iso format; see https://en.wikipedia.org/wiki/ISO_8601", example="YYYY-mm-ddTHH:MM:SS") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime requestTime,
             @Parameter(name="explanation", description="Explanation for the help request", example="Need help with Swagger-ui") @RequestParam String explanation,
-            @Parameter(name="solved", description="Is the request solved?", example="false") @RequestParam boolean solved) {
+            @Parameter(name="solved", description="Is the request solved?", example="false") @RequestParam boolean solved)
+            throws JsonProcessingException {
         
         log.info("Creating new help request by email: {}", requesterEmail);
 
