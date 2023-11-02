@@ -72,3 +72,15 @@ On localhost:
 
 On Dokku, follow instructions for Dokku databases:
 * <https://ucsb-cs156.github.io/topics/dokku/postgres_database.html>
+
+# Database Table
+```
+| Table                       | Team Member  |     Github Id     |
+|-----------------------------|--------------|-------------------| 
+| `UCSBDiningCommonsMenuItem` | Erica        | erica-ll          |
+| `UCSBOrganization`          | Yicong       | YicongYan         |
+| `RecommendationRequest`     | Salvador     | SalvadorGracia    |
+| `MenuItemReview`            | Bella        | bella-ward        |  
+| `HelpRequest`               | Leo          | HououinKyouma-2036|
+| `Articles`                  | Garret       | Garrett-Hu        |
+```
